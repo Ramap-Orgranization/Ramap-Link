@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createAndroidIntentUrl, createIosAppUrl } from '@/lib/app-links';
+import { createAndroidIntentUrl } from '@/lib/app-links';
 import {
   detectDevicePlatform,
   type DevicePlatform,
@@ -27,40 +27,35 @@ export function AppOpenActions({
   function openApp() {
     if (platform === 'android') {
       window.location.assign(createAndroidIntentUrl(shopId));
-    } else if (platform === 'ios') {
-      window.location.assign(createIosAppUrl(shopId));
     }
   }
 
   useEffect(() => {
-    if (platform === 'other') return;
+    if (platform !== 'android') return;
 
     const launchTimer = window.setTimeout(openApp, 100);
     return () => window.clearTimeout(launchTimer);
   }, [platform, shopId]);
 
-  const storeUrl =
-    platform === 'android'
-      ? googlePlayUrl
-      : platform === 'ios'
-        ? appStoreUrl
-        : undefined;
-  const storeName =
-    platform === 'android'
-      ? 'Google Play로 이동'
-      : platform === 'ios'
-        ? 'App Store로 이동'
-        : '스토어로 이동';
-  const isMobilePlatform = platform !== 'other';
+  const storeUrl = platform === 'android' ? googlePlayUrl : undefined;
+  const storeName = platform === 'android' ? 'Google Play로 이동' : '스토어로 이동';
+  const isAndroid = platform === 'android';
+  const isIos = platform === 'ios';
+  const isSupportedMobile = isAndroid || isIos;
 
   return (
     <div className="actions">
+      {isIos && (
+        <p className="platform-note" id="platform-status">
+          iOS는 현재 준비중입니다!
+        </p>
+      )}
       <button
         className="button button-primary"
         type="button"
         onClick={openApp}
-        disabled={!isMobilePlatform}
-        aria-describedby={!isMobilePlatform ? 'platform-status' : undefined}
+        disabled={!isAndroid}
+        aria-describedby={!isAndroid ? 'platform-status' : undefined}
       >
         앱 열기
       </button>
@@ -74,7 +69,7 @@ export function AppOpenActions({
           type="button"
           disabled
           aria-describedby={
-            !isMobilePlatform ? 'platform-status' : 'store-status'
+            !isSupportedMobile ? 'platform-status' : 'store-status'
           }
         >
           {storeName}
@@ -83,7 +78,7 @@ export function AppOpenActions({
       <p className="action-note" id="store-status">
         열리지 않으면 아래 스토어에서 설치 후 다시 시도해 주세요.
       </p>
-      {!isMobilePlatform && (
+      {!isSupportedMobile && (
         <p className="platform-note" id="platform-status">
           Android 또는 iPhone에서 열어 주세요.
         </p>
