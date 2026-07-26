@@ -17,7 +17,7 @@ export function encodeShopId(shopId: string): string {
 }
 
 export function createAndroidIntentUrl(shopId: string): string {
-  return `intent://shop/${encodeShopId(shopId)}#Intent;scheme=ramap;package=${ANDROID_RELEASE_PACKAGE};end`;
+  return `intent://shop/${encodeShopId(shopId)}#Intent;scheme=ramap;end`;
 }
 
 export function createIosAppUrl(shopId: string): string {
@@ -31,7 +31,7 @@ export function parseFingerprints(
 ): string[] {
   const fingerprints =
     value
-      ?.split(/[,\n]/)
+      ?.split(/[,\\n]/)
       .map((item) => item.trim())
       .filter(Boolean) ?? [];
 
