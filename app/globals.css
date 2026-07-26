@@ -1,0 +1,234 @@
+:root {
+  --ink: #181818;
+  --muted: #737373;
+  --surface: #f3f3f3;
+  --disabled: #9a9a9a;
+  --accent: #ff6a00;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family:
+    Pretendard,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.relay-page {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  padding: max(32px, env(safe-area-inset-top))
+    max(24px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom))
+    max(24px, env(safe-area-inset-left));
+}
+
+.relay-content {
+  width: min(100%, 562px);
+  text-align: center;
+}
+
+.relay-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.app-icon {
+  width: 112px;
+  height: 112px;
+  border-radius: 24px;
+}
+
+.brand-name {
+  margin: 18px 0 0;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.brand-tagline {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(28px, 7.2vw, 38px);
+  line-height: 1.25;
+  letter-spacing: -0.045em;
+  word-break: keep-all;
+}
+
+h3 {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: clamp(16px, 4.3vw, 19px);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+  word-break: keep-all;
+}
+
+.actions {
+  display: grid;
+  gap: 12px;
+  margin-top: 42px;
+}
+
+.button {
+  display: inline-flex;
+  width: 100%;
+  min-height: 64px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 18px;
+  padding: 0 20px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: 3px solid rgba(255, 106, 0, 0.35);
+  outline-offset: 3px;
+}
+
+.button-primary {
+  background: var(--ink);
+  color: white;
+}
+
+.button-primary:active {
+  background: #343434;
+}
+
+.button-secondary {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.button-secondary:disabled {
+  color: var(--disabled);
+  cursor: not-allowed;
+}
+
+.button-primary:disabled {
+  background: #4a4a4a;
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.action-note,
+.platform-note {
+  color: var(--disabled);
+  font-size: 14px;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.action-note {
+  margin: 14px 0 0;
+}
+
+.platform-note {
+  margin: -4px 0 0;
+}
+
+.shell {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 24px;
+}
+
+.home-card,
+.status-card {
+  width: min(100%, 520px);
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 12px 0 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
+.lead,
+.status-copy {
+  margin: 18px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.status-code {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.skeleton {
+  animation: pulse 1.3s ease-in-out infinite alternate;
+  background: #eee;
+}
+
+@keyframes pulse {
+  to {
+    opacity: 0.45;
+  }
+}
+
+@media (max-height: 650px) {
+  .relay-brand {
+    margin-bottom: 22px;
+  }
+
+  .actions {
+    margin-top: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
