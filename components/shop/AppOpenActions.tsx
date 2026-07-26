@@ -32,6 +32,13 @@ export function AppOpenActions({
     }
   }
 
+  useEffect(() => {
+    if (platform === 'other') return;
+
+    const launchTimer = window.setTimeout(openApp, 100);
+    return () => window.clearTimeout(launchTimer);
+  }, [platform, shopId]);
+
   const storeUrl =
     platform === 'android'
       ? googlePlayUrl
