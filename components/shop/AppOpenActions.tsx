@@ -74,7 +74,7 @@ export function AppOpenActions({
         </button>
       )}
       <p className="action-note" id="store-status">
-        앱이 열리지 않으면 라맵을 설치한 뒤 다시 시도해 주세요.
+        열리지 않으면 아래 스토어에서 설치 후 다시 시도해 주세요.
       </p>
       {!isMobilePlatform && (
         <p className="platform-note" id="platform-status">

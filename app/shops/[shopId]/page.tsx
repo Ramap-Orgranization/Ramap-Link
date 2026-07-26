@@ -22,7 +22,8 @@ export async function generateMetadata({
   const siteUrl = requireSiteUrl();
   const canonicalUrl = `${siteUrl}/shops/${encodeURIComponent(shopId)}`;
   const title = '라맵에서 매장을 확인해 보세요';
-  const description = '공유받은 라멘 매장을 라맵 앱에서 바로 확인해 보세요.';
+  const description =
+    '앱이 설치되어 있다면 공유받은 라멘 매장을 라맵에서 바로 열 수 있어요.';
 
   return {
     title,

@@ -24,11 +24,11 @@ export function ShopShareLanding({
             priority
             alt="라맵 앱 아이콘"
           />
-          <p className="brand-name">RAMAP</p>
-          <p className="brand-tagline">라멘을 위한 지도</p>
+          <p className="brand-name">라맵</p>
+          <p className="brand-tagline">라오타가 만든 대한민국 라멘 지도</p>
         </div>
         <h1 id="relay-title">라맵</h1>
-        <h3>라오타가 만든 대한민국 라멘 지도</h3>
+        <h3>앱이 설치되어 있다면 바로 열 수 있어요.</h3>
         <AppOpenActions
           shopId={shopId}
           googlePlayUrl={googlePlayUrl}
