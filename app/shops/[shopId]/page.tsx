@@ -8,6 +8,29 @@ interface ShopPageProps {
   params: Promise<{ shopId: string }>;
 }
 
+function createInstallReferrer(shopId: string, clickId: string): string {
+  const params = new URLSearchParams({
+    click_id: clickId,
+    source: 'share',
+    campaign: 'shop_share',
+    shop_id: shopId,
+  });
+
+  return params.toString();
+}
+
+function appendInstallReferrer(
+  storeUrl: string | undefined,
+  shopId: string,
+  clickId: string,
+): string | undefined {
+  if (!storeUrl) return undefined;
+
+  const url = new URL(storeUrl);
+  url.searchParams.set('referrer', createInstallReferrer(shopId, clickId));
+  return url.toString();
+}
+
 export async function generateMetadata({
   params,
 }: ShopPageProps): Promise<Metadata> {
@@ -50,11 +73,17 @@ export default async function ShopPage({ params }: ShopPageProps) {
   if (!isValidShopId(shopId)) {
     notFound();
   }
+  const clickId = crypto.randomUUID();
 
   return (
     <ShopShareLanding
       shopId={shopId}
-      googlePlayUrl={process.env.NEXT_PUBLIC_GOOGLE_PLAY_URL}
+      clickId={clickId}
+      googlePlayUrl={appendInstallReferrer(
+        process.env.NEXT_PUBLIC_GOOGLE_PLAY_URL,
+        shopId,
+        clickId,
+      )}
       appStoreUrl={process.env.NEXT_PUBLIC_APP_STORE_URL}
     />
   );

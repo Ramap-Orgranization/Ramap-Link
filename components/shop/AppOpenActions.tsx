@@ -9,22 +9,42 @@ import {
 
 interface AppOpenActionsProps {
   shopId: string;
+  clickId: string;
   googlePlayUrl?: string;
   appStoreUrl?: string;
 }
 
 export function AppOpenActions({
   shopId,
+  clickId,
   googlePlayUrl,
   appStoreUrl,
 }: AppOpenActionsProps) {
   const [platform, setPlatform] = useState<DevicePlatform>('other');
+  const [platformDetected, setPlatformDetected] = useState(false);
 
   useEffect(() => {
     setPlatform(detectDevicePlatform(navigator));
+    setPlatformDetected(true);
   }, []);
 
+  useEffect(() => {
+    if (!platformDetected) return;
+    void trackWebLinkEvent({
+      clickId,
+      shopId,
+      eventType: 'landing_view',
+      platform,
+    });
+  }, [clickId, platform, platformDetected, shopId]);
+
   function openApp() {
+    void trackWebLinkEvent({
+      clickId,
+      shopId,
+      eventType: 'app_open_clicked',
+      platform,
+    });
     if (platform === 'android') {
       window.location.assign(createAndroidIntentUrl(shopId));
     }
@@ -60,7 +80,18 @@ export function AppOpenActions({
         앱 열기
       </button>
       {storeUrl ? (
-        <a className="button button-secondary" href={storeUrl}>
+        <a
+          className="button button-secondary"
+          href={storeUrl}
+          onClick={() =>
+            void trackWebLinkEvent({
+              clickId,
+              shopId,
+              eventType: 'store_open_clicked',
+              platform,
+            })
+          }
+        >
           {storeName}
         </a>
       ) : (
@@ -85,4 +116,18 @@ export function AppOpenActions({
       )}
     </div>
   );
+}
+
+async function trackWebLinkEvent(event: {
+  clickId: string;
+  shopId: string;
+  eventType: 'landing_view' | 'app_open_clicked' | 'store_open_clicked';
+  platform: DevicePlatform;
+}) {
+  await fetch('/api/web-link-events', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(event),
+    keepalive: true,
+  }).catch(() => undefined);
 }
