@@ -34,6 +34,7 @@ function appendInstallReferrer(
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: ShopPageProps): Promise<Metadata> {
   const { shopId } = await params;
   if (!isValidShopId(shopId)) {
@@ -45,9 +46,16 @@ export async function generateMetadata({
 
   const siteUrl = requireSiteUrl();
   const canonicalUrl = `${siteUrl}/shops/${encodeURIComponent(shopId)}`;
-  const title = '라맵에서 매장을 확인해 보세요';
-  const description =
-    '앱이 설치되어 있다면 공유받은 라멘 매장을 라맵에서 바로 열 수 있어요.';
+  const reviewId = readReviewId((await searchParams).review);
+  const shareUrl = reviewId
+    ? `${canonicalUrl}?review=${encodeURIComponent(reviewId)}`
+    : canonicalUrl;
+  const title = reviewId
+    ? '라맵에서 리뷰를 확인해 보세요'
+    : '라맵에서 매장을 확인해 보세요';
+  const description = reviewId
+    ? '앱이 설치되어 있다면 공유받은 리뷰를 라맵에서 바로 열 수 있어요.'
+    : '앱이 설치되어 있다면 공유받은 라멘 매장을 라맵에서 바로 열 수 있어요.';
 
   return {
     title,
@@ -57,7 +65,7 @@ export async function generateMetadata({
       type: 'website',
       locale: 'ko_KR',
       siteName: '라맵',
-      url: canonicalUrl,
+      url: shareUrl,
       title: `${title} | 라맵`,
       description,
     },
