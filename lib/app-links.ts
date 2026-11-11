@@ -16,12 +16,29 @@ export function encodeShopId(shopId: string): string {
   return encodeURIComponent(shopId);
 }
 
-export function createAndroidIntentUrl(shopId: string): string {
-  return `intent://shop/${encodeShopId(shopId)}#Intent;scheme=ramap;end`;
+export function readReviewId(
+  value: string | string[] | undefined,
+): string | undefined {
+  return typeof value === 'string' && UUID_PATTERN.test(value)
+    ? value
+    : undefined;
 }
 
-export function createIosAppUrl(shopId: string): string {
-  return `ramap://shop/${encodeShopId(shopId)}`;
+function createShopAppPath(shopId: string, reviewId?: string): string {
+  const review = readReviewId(reviewId);
+  const query = review ? `?review=${encodeURIComponent(review)}` : '';
+  return `shop/${encodeShopId(shopId)}${query}`;
+}
+
+export function createAndroidIntentUrl(
+  shopId: string,
+  reviewId?: string,
+): string {
+  return `intent://${createShopAppPath(shopId, reviewId)}#Intent;scheme=ramap;end`;
+}
+
+export function createIosAppUrl(shopId: string, reviewId?: string): string {
+  return `ramap://${createShopAppPath(shopId, reviewId)}`;
 }
 
 export function parseFingerprints(

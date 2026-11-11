@@ -3,6 +3,7 @@ import { AppOpenActions } from './AppOpenActions';
 
 interface ShopShareLandingProps {
   shopId: string;
+  reviewId?: string;
   clickId: string;
   googlePlayUrl?: string;
   appStoreUrl?: string;
@@ -10,6 +11,7 @@ interface ShopShareLandingProps {
 
 export function ShopShareLanding({
   shopId,
+  reviewId,
   clickId,
   googlePlayUrl,
   appStoreUrl,
@@ -34,6 +36,7 @@ export function ShopShareLanding({
         <p className="relay-message">앱이 설치되어 있다면 바로 열 수 있어요.</p>
         <AppOpenActions
           shopId={shopId}
+          reviewId={reviewId}
           clickId={clickId}
           googlePlayUrl={googlePlayUrl}
           appStoreUrl={appStoreUrl}

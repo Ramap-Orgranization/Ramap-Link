@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { createAndroidIntentUrl } from '@/lib/app-links';
+import { useCallback, useEffect, useState } from 'react';
+import { createAndroidIntentUrl, createIosAppUrl } from '@/lib/app-links';
 import {
   detectDevicePlatform,
   type DevicePlatform,
@@ -9,6 +9,7 @@ import {
 
 interface AppOpenActionsProps {
   shopId: string;
+  reviewId?: string;
   clickId: string;
   googlePlayUrl?: string;
   appStoreUrl?: string;
@@ -16,6 +17,7 @@ interface AppOpenActionsProps {
 
 export function AppOpenActions({
   shopId,
+  reviewId,
   clickId,
   googlePlayUrl,
   appStoreUrl,
@@ -38,7 +40,7 @@ export function AppOpenActions({
     });
   }, [clickId, platform, platformDetected, shopId]);
 
-  function openApp() {
+  const openApp = useCallback(() => {
     void trackWebLinkEvent({
       clickId,
       shopId,
@@ -46,26 +48,33 @@ export function AppOpenActions({
       platform,
     });
     if (platform === 'android') {
-      window.location.assign(createAndroidIntentUrl(shopId));
+      window.location.assign(createAndroidIntentUrl(shopId, reviewId));
+    } else if (platform === 'ios' && reviewId) {
+      window.location.assign(createIosAppUrl(shopId, reviewId));
     }
-  }
+  }, [clickId, platform, reviewId, shopId]);
 
   useEffect(() => {
     if (platform !== 'android') return;
 
     const launchTimer = window.setTimeout(openApp, 100);
     return () => window.clearTimeout(launchTimer);
-  }, [platform, shopId]);
+  }, [openApp, platform]);
 
-  const storeUrl = platform === 'android' ? googlePlayUrl : undefined;
-  const storeName = platform === 'android' ? 'Google Play로 이동' : '스토어로 이동';
   const isAndroid = platform === 'android';
   const isIos = platform === 'ios';
+  const canOpenApp = isAndroid || (isIos && !!reviewId);
+  const storeUrl = isAndroid
+    ? googlePlayUrl
+    : canOpenApp
+      ? appStoreUrl
+      : undefined;
+  const storeName = isAndroid ? 'Google Play로 이동' : '스토어로 이동';
   const isSupportedMobile = isAndroid || isIos;
 
   return (
     <div className="actions">
-      {isIos && (
+      {isIos && !canOpenApp && (
         <p className="platform-note" id="platform-status">
           iOS는 현재 준비중입니다!
         </p>
@@ -74,8 +83,8 @@ export function AppOpenActions({
         className="button button-primary"
         type="button"
         onClick={openApp}
-        disabled={!isAndroid}
-        aria-describedby={!isAndroid ? 'platform-status' : undefined}
+        disabled={!canOpenApp}
+        aria-describedby={!canOpenApp ? 'platform-status' : undefined}
       >
         앱 열기
       </button>

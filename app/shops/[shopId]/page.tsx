@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ShopShareLanding } from '@/components/shop/ShopShareLanding';
-import { isValidShopId } from '@/lib/app-links';
+import { isValidShopId, readReviewId } from '@/lib/app-links';
 import { requireSiteUrl } from '@/lib/env';
 
 interface ShopPageProps {
   params: Promise<{ shopId: string }>;
+  searchParams: Promise<{ review?: string | string[] }>;
 }
 
 function createInstallReferrer(shopId: string, clickId: string): string {
@@ -68,16 +69,21 @@ export async function generateMetadata({
   };
 }
 
-export default async function ShopPage({ params }: ShopPageProps) {
+export default async function ShopPage({
+  params,
+  searchParams,
+}: ShopPageProps) {
   const { shopId } = await params;
   if (!isValidShopId(shopId)) {
     notFound();
   }
   const clickId = crypto.randomUUID();
+  const reviewId = readReviewId((await searchParams).review);
 
   return (
     <ShopShareLanding
       shopId={shopId}
+      reviewId={reviewId}
       clickId={clickId}
       googlePlayUrl={appendInstallReferrer(
         process.env.NEXT_PUBLIC_GOOGLE_PLAY_URL,
